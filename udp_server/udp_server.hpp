@@ -73,3 +73,6 @@ void InitServer()
 
 }
 
+prinyf("wangjialong");
+
+
