@@ -1,7 +1,20 @@
-#include "udp-server.hpp"
+#include "udp_client.hpp"
 
-int main()
+void Usage(std::string _proc)
 {
-  std::cout<<"hello client"<<std::endl;
-  return 0;
+  std::cout << _proc <<"server_ip server_port"<< std::endl;
+}
+
+//./udp_client srerver_ip server_port
+
+int main(int argc, char *argv[])
+{
+  if(argc !=3){
+    Usage(argv[0]);
+    exit(1);
+  }
+  Client *cli = new Client(argv[1], atoi(argv[2]));
+      cli->InitClient();
+      cli->Run();
+      return 0;
 }
