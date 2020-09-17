@@ -12,7 +12,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
+/*
 class Dict{
   private:
     std::unordered_map<std::string, std::string>dict;
@@ -28,13 +28,13 @@ class Dict{
     }
 
 };
-
+*/
 class Server{
   private:
     std::string ip;
     short port;
     int listen_sock;
-    static Dict d;
+  //  static Dict d;
   public:
     Server(std::string _ip, short _port):ip(_ip), port(_port), listen_sock(-1)
   {}
@@ -58,8 +58,51 @@ class Server{
              std::cerr << "listen error" << std::endl;
              exit(4);
             }
-        }        
+        }
+    void ServiceIO(int fd)
+    {
+      char buf[1024];
+      while(1){
+        ssize_t s = read(fd, buf, sizeof(buf)-1);
+        if(s > 0){
+          buf[s]=0;
+          std::cout << "client# " << buf <<std::endl;
+          write(fd, buf, strlen(buf));
+        }
+        else if(s == 0){
+          std::cout << "client ... quit"<< std::endl;
+          break;
+        }
+        else{
+          std::cerr << " read ... error"<< std::endl;
+          break;
+        }
+      }
+      close(fd);
+      std::cout << "server ... done" << std::endl;
+    }
+
+    void Start()
+    {
+      for(; ; ){
+        struct sockaddr_in peer;
+        socklen_t len = sizeof(peer);
+        int fd = accept(listen_sock, (struct sockaddr*)&peer,&len);
+        if(fd < 0){
+          std::cerr << "accept error!" <<std::endl;
+          continue;
+        }
+        ServiceIO(fd);
+      }
+    }
+    ~Server()
+    {
+      if(listen_sock >= 0){
+        close(listen_sock);
+      }
+    }
 };
+
 
 
 #endif  

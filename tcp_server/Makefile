@@ -5,7 +5,7 @@ tcp_client : tcp_client.cc
 	g++ -o $@ $^ -std=c++11
 
 tcp_server : tcp_server.cc 
-	g++ -o $@ $^ -lpthread -std=c++11
+	g++ -o $@ $^ -std=c++11
 
 .PHONY:clean
 clean:
