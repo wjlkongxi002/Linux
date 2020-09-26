@@ -52,6 +52,9 @@ class Client{
         std::cout << "请输入信息#";
         std::cin >> message;
         write(sockfd, message.c_str(), message.size());
+        if(message == "q" || message == "quit"){
+          break;
+        }
 
         ssize_t s = read(sockfd, buf, sizeof(buf)-1);
         if(s > 0){
@@ -59,6 +62,7 @@ class Client{
           std::cout << "Server Echo# " << buf << std::endl;
         }
       }
+      std::cout << "quit!"<< std::endl;
     }
     ~Client()
     {

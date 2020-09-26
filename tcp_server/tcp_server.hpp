@@ -66,6 +66,11 @@ class Server{
         ssize_t s = read(fd, buf, sizeof(buf)-1);
         if(s > 0){
           buf[s]=0;
+          std::string q= buf;
+          if(q == "q" || q == "quit"){
+            std::cout << "client ... quit" << std::endl;
+            break;
+          }
           std::cout << "client# " << buf <<std::endl;
           write(fd, buf, strlen(buf));
         }
@@ -92,6 +97,7 @@ class Server{
           std::cerr << "accept error!" <<std::endl;
           continue;
         }
+        std::cout << "get a linking ... "<< inet_ntoa(peer.sin_addr) << ":" << ntohs(peer.sin_port) << std::endl;
         ServiceIO(fd);
       }
     }
