@@ -12,7 +12,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-/*
+
 class Dict{
   private:
     std::unordered_map<std::string, std::string>dict;
@@ -27,14 +27,27 @@ class Dict{
           });
     }
 
+    std::string Search(const std::string &k)
+    {
+      std::unordered_map<std::string,std::string>::const_iterator it = dict.find(k);
+      if(it == dict.end()){
+        return "查不到";
+      }
+      return it->second;
+    }
+    ~Dict()
+    {}
+
 };
-*/
+
+
+
 class Server{
   private:
     std::string ip;
     short port;
     int listen_sock;
-  //  static Dict d;
+    static Dict d;
   public:
     Server(std::string _ip, short _port):ip(_ip), port(_port), listen_sock(-1)
   {}
@@ -59,8 +72,12 @@ class Server{
              exit(4);
             }
         }
-    void ServiceIO(int fd)
+   static  void *ServiceIO(void *args)
     {
+      int *p = (int*)args;
+      int fd = *p;
+      delete p;
+
       char buf[1024];
       while(1){
         ssize_t s = read(fd, buf, sizeof(buf)-1);
@@ -71,8 +88,9 @@ class Server{
             std::cout << "client ... quit" << std::endl;
             break;
           }
-          std::cout << "client# " << buf <<std::endl;
-          write(fd, buf, strlen(buf));
+          std::string value = d.Search(q);
+          std::cout << "client# " << q << "->" << value << std::endl;
+          write(fd, value.c_str(), value.size());
         }
         else if(s == 0){
           std::cout << "client ... quit"<< std::endl;
@@ -98,7 +116,18 @@ class Server{
           continue;
         }
         std::cout << "get a linking ... "<< inet_ntoa(peer.sin_addr) << ":" << ntohs(peer.sin_port) << std::endl;
-        ServiceIO(fd);
+        pthread_t tid;
+        int *p = new int (fd);
+        pthread_create(&tid, nullptr, ServiceIO, (void*)p);
+        
+        // pid_t id = fork();//创建多进程实现多个客户端访问一个服务器
+       // if(id == 0){
+          //child
+       //   close(listen_sock);
+       //   ServiceIO(fd);
+       //   exit(0);
+       // }
+       //  close(fd);
       }
     }
     ~Server()
@@ -108,7 +137,7 @@ class Server{
       }
     }
 };
-
+Dict Server::d;
 
 
 #endif  
