@@ -5,7 +5,6 @@
 #define THREAD_COUNT 4
 
 int g_tickets = 100;
-
 pthread_mutex_t tex;
 
 struct ThreaddData
@@ -56,6 +55,7 @@ int main()
     }
   }
 
+
   while(1)
   {
     //printf("i am main thread\n");
@@ -64,3 +64,8 @@ int main()
   pthread_mutex_destroy(&tex);
   return 0;
 }
+
+
+
+
+
