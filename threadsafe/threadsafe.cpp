@@ -2,9 +2,12 @@
 #include <pthread.h>
 #include <unistd.h>
 
+
+
 #define THREAD_COUNT 4
 
 int g_tickets = 100;
+
 pthread_mutex_t tex;
 
 struct ThreaddData
@@ -15,6 +18,8 @@ struct ThreaddData
     num_ = -1;
   }
 };
+
+
 
 void* ThreadStart(void* arg)
 {
@@ -39,6 +44,8 @@ void* ThreadStart(void* arg)
 }
 
 
+
+
 int main()
 {
   pthread_mutex_init(&tex, NULL);
@@ -56,6 +63,9 @@ int main()
   }
 
 
+
+
+
   while(1)
   {
     //printf("i am main thread\n");
@@ -64,8 +74,4 @@ int main()
   pthread_mutex_destroy(&tex);
   return 0;
 }
-
-
-
-
 
