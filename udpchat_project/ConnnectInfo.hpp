@@ -54,7 +54,7 @@ struct ReplyInfo
   uint32_t id_;
 };
 
-// 枚举状态
+// 枚举状态  为resp_status_ 准备的
 
 enum status
 {
