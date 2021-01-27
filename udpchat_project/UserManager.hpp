@@ -13,20 +13,20 @@
  *
  *   不足之处：
  *      每次重启服务进程之后，之前注册的所有用户没有了
- *   解决方法：
+ *   解决方法1：
  *      将之前注册的数据放到数据库中
- *      1.启动服务的时候没需要去数据库当中获取之前的注册用户信息，加载到进程内存当中，
+ *      1.启动服务的时候,需要去数据库当中获取之前的注册用户信息，加载到进程内存当中，
  *        在判断登录的时候，不需要查询数据库，用户访问比较快捷
  *
  *      2.当注册完毕之后，还需要将数据及时写到数据库当中
- *
+ *   解决方法2：
  *      将注册的数据持久化到文件当中
  * */
 
 class UserInfo
 {
   public:
-    UserInfo(std::string& nick_name, std::string& school, std::string& passwd, uint32_t user_id)
+    UserInfo(const std::string& nick_name,const  std::string& school,const  std::string& passwd, uint32_t user_id)
     {
       nick_name_ = nick_name;
       school_ = school;

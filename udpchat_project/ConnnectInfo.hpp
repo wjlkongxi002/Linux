@@ -58,10 +58,10 @@ struct ReplyInfo
 
 enum status
 {
-  REGISTER_FAILED = 0,
-  REGISTER_SUCCESS,
-  LOGIN_FAILED,
-  LOGIN_SUCCESS
+  REGISTER_FAILED = 0,    // 注册失败
+  REGISTER_SUCCESS,       // 注册成功
+  LOGIN_FAILED,           // 登录失败
+  LOGIN_SUCCESS           // 登录成功
 };
 
 // 如何标识当前的请求是注册请求还是登录请求
@@ -74,8 +74,8 @@ enum status
  * */
 enum ResqType
 {
-  REGISTER_RESQ = 0,
- LOGIN_RESQ
+  REGISTER_RESQ = 0,   // 注册请求标识
+  LOGIN_RESQ           // 登录请求标识
 
 };
 

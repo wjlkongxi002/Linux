@@ -22,7 +22,7 @@ class TcpConnect
     TcpConnect()
     {
       new_sock_ = -1;
-
+      server_ = NULL;
     }
     ~TcpConnect()
     {
@@ -55,6 +55,9 @@ class TcpConnect
     // 保存ChatServer这个类的this指针，确保在tcp的线程入口函数当中可以获取到用户管理模块的实例化指针
     void* server_;
 };
+
+
+
 class ChatServer
 {
   public:
@@ -80,7 +83,7 @@ class ChatServer
       //1.创建tcp-socket，并且绑定地址信息，监听
       // 注册+登录模块
       tcp_sock_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-      if(tcp_sock_ < 0)
+      if(tcp_sock_ < 0)  // 创建失败
       {
         return -1;
       }
@@ -105,13 +108,12 @@ class ChatServer
       Log(INFO, __FILE__, __LINE__, msg) << std::endl;
 
       // 创建用户管理模块指针
-      
-    user_manager_ = new UserManager();
-    if(!user_manager_)
-    {
-      Log(INFO, __FILE__, __LINE__, msg) << std::endl;
-      return -1;
-    }
+      user_manager_ = new UserManager();
+      if(!user_manager_)
+      {
+        Log(INFO, __FILE__, __LINE__, msg) << std::endl;
+        return -1;
+      }
 
       //暂时还没有考虑的是udp通信，以及登录注册模块，消息池的初始化
       
@@ -140,12 +142,12 @@ class ChatServer
       //udp 线程的创建
       
       
-      
-      struct sockaddr_in peer_addr;
+      // 获取连接 
+      struct sockaddr_in peer_addr; // 对端的地址信息
       socklen_t peer_addrlen = sizeof(peer_addr);
       while(1)
       {
-        int new_sock = accept(tcp_sock_, (struct sockaddr*)&peer_addr, &peer_addrlen);
+          int new_sock = accept(tcp_sock_, (struct sockaddr*)&peer_addr, &peer_addrlen);
 
           if(new_sock < 0)
           {
@@ -172,6 +174,7 @@ class ChatServer
     }
 
   private:
+    // 类的成员函数传参会传递this指针，所以加静态static
     static void* LoginRegisterStart(void* arg)
     {
       /*
@@ -182,12 +185,12 @@ class ChatServer
        *登录
        * */
 
-      pthread_detach(pthread_self());
-      TcpConnect* tc = (TcpConnect*)arg;
+      pthread_detach(pthread_self()); // 先分离自己
+      TcpConnect* tc = (TcpConnect*)arg; // ？？
       ChatServer* cs = (ChatServer*)tc->GetServer();
 
-      char ques_type = -1;
-      // tcp原生的接收函数 接收新连接
+      char ques_type = -1; // 
+      // tcp原生的接收函数 接收数据
       ssize_t recv_size = recv(tc->GetSockFd(), &ques_type, 1, 0);
       if(recv_size < 0)
       {
